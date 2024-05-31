@@ -1,65 +1,41 @@
 import {map} from "./assets";
 
-export default class Map{
-    MAP_SIZE: number = 16
-    MAP_SCALE: number = 20
-    MAP_RANGE: number = this.MAP_SCALE * this.MAP_SIZE
-    MAP_SPEED: number = ( this.MAP_SCALE / 2 ) / 10
-                                    // canvas.width
-    mapOffsetX: number = Math.floor(800 / 2 - this.MAP_RANGE / 2);
-                                    // canvas.height
-    mapOffsetY: number = Math.floor( 600 / 2 - this.MAP_RANGE / 2);
-    mapTargetX: number = 0
-    mapTargetY: number = 0
-    MAP: number[][] = map
-    context: CanvasRenderingContext2D
-    constructor(context: CanvasRenderingContext2D) {
-        this.context = context
-    }
+export default class GameMap{
 
-    isWalkable(x: number, y: number, radius: number) {
-        const col = Math.floor((x - radius) / this.MAP_SCALE);
-        const row = Math.floor((y - radius) / this.MAP_SCALE);
-        const colEnd = Math.floor((x + radius) / this.MAP_SCALE);
-        const rowEnd = Math.floor((y + radius) / this.MAP_SCALE);
+    readonly MAP_SIZE: number = 16
+    readonly MAP_SCALE: number = 20
+    readonly MAP_RANGE: number = this.MAP_SCALE * this.MAP_SIZE
+    readonly MAP_SPEED: number = ( this.MAP_SCALE / 2 ) / 10
 
-        if (col < 0 || colEnd >= this.MAP_SIZE || row < 0 || rowEnd >= this.MAP_SIZE) {
-            return false;
-        }
-        for (let r = row; r <= rowEnd; r++) {
-            for (let c = col; c <= colEnd; c++) {
-                if (this.MAP[r][c] !== 0) {
-                    // Проверяем столкновение с непроходимой ячейкой
-                    const obstacleX = c * this.MAP_SCALE + this.MAP_SCALE / 2;
-                    const obstacleY = r * this.MAP_SCALE + this.MAP_SCALE / 2;
-                    const distance = Math.sqrt(Math.pow(obstacleX - x, 2) + Math.pow(obstacleY - y, 2));
-                    if (distance <= radius) {
-                        return false; // Обнаружено столкновение
-                    }
-                }
-            }
-        }
+    mapOffsetX: number = 0
+    mapOffsetY: number = 0
 
-        // Если не было столкновений, вернуть true
-        return true;
-        }
 
-    draw(){
+    MAP: number[] = map
+    constructor(
+        private readonly context: CanvasRenderingContext2D
+    ) {}
 
-        for (let row = 0; row < this.MAP.length; row++) {
-            for (let column = 0; column < this.MAP[row].length; column++) {
-                // let square = row *  this.MAP_SIZE + column
-                if (this.MAP[row][column] !== 0) {
-                    this.context.fillStyle = 'White';
-                } else {
-                    this.context.fillStyle = 'Black';
+
+
+    draw(width: number, height: number ){
+        this.mapOffsetX = Math.floor(width / 2 - this.MAP_RANGE / 2)
+        this.mapOffsetY = Math.floor(height / 2 - this.MAP_RANGE / 2)
+
+        for (let row = 0; row < this.MAP_SIZE; row++) {
+            for (let col = 0; col < this.MAP_SIZE; col++) {
+                let square = row * this.MAP_SIZE + col
+                if(this.MAP[square] !== 0){
+                    this.context.fillStyle = "#555"
+                }else{
+                    this.context.fillStyle = "#aaa"
                 }
                 this.context.fillRect(
-                    this.mapOffsetX + column * this.MAP_SCALE,
-                    this.mapOffsetY + row * this.MAP_SCALE,
+                    Math.floor(width / 2 - this.MAP_RANGE / 2) + col * this.MAP_SCALE,
+                    Math.floor(height / 2 - this.MAP_RANGE / 2) + row * this.MAP_SCALE,
                     this.MAP_SCALE,
                     this.MAP_SCALE
-                );
+                )
             }
         }
     }

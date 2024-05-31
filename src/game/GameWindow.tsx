@@ -30,8 +30,7 @@ export const GameWindow = () => {
                             break;
                     }
                 };
-
-                const handleKeyUp = (event: KeyboardEvent) => {
+                const handleKeyUp   = (event: KeyboardEvent) => {
                     switch (event.code) {
                         case 'KeyS':
                         case 'KeyW':
@@ -43,18 +42,19 @@ export const GameWindow = () => {
                             break;
                     }
                 };
-
-                document.addEventListener('keydown', handleKeyDown);
-                document.addEventListener('keyup', handleKeyUp);
+                document.onkeydown = handleKeyDown
+                document.onkeyup = handleKeyUp
 
                 window.onload = () => {
                     gameWindow.gameLoop(0);
                 };
-
+/*
                 return () => {
                     document.removeEventListener('keydown', handleKeyDown);
                     document.removeEventListener('keyup', handleKeyUp);
                 };
+
+ */
             } else {
                 setIsContextAble(false);
             }
