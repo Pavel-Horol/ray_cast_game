@@ -1,11 +1,10 @@
 import './App.css';
-import {Game} from "./game/Game";
-
+import {GameWindow} from "./game/GameWindow";
 export const App = () => {
     return (
         <div>
             <h1>My Portfolio</h1>
-            <Game/>
+            <GameWindow/>
         </div>
     );
 };
