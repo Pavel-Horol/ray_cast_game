@@ -1,3 +1,5 @@
+import {Player} from "./Player";
+
 export default class GameWindow {
     width: number;
     height: number;
@@ -23,8 +25,13 @@ export default class GameWindow {
     MAP_SCALE: number
     MAP_RANGE: number
     MAP_SPEED: number
-
     MAP: number[][]
+    mapOffsetX: number;
+    mapOffsetY: number;
+    //player
+    player: Player
+
+    DOUBLE_PI: number
     constructor(canvas: HTMLCanvasElement) {
         this.width = canvas.width;
         this.height = canvas.height
@@ -49,7 +56,7 @@ export default class GameWindow {
 
         //map
         this.MAP_SIZE = 16
-        this.MAP_SCALE = 10
+        this.MAP_SCALE = 20
         this.MAP_RANGE = this.MAP_SCALE * this.MAP_SIZE
         this.MAP_SPEED = (this.MAP_SCALE / 2) / 10
 
@@ -72,6 +79,22 @@ export default class GameWindow {
             [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1], // 15
             [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1], // 16
         ]
+        this.mapOffsetX = Math.floor(canvas.width / 2 - this.MAP_RANGE / 2);
+        this.mapOffsetY = Math.floor(canvas.height / 2 - this.MAP_RANGE / 2);
+
+
+        //player
+        this.player = new Player(
+        this.MAP_SCALE + 20,
+        this.MAP_SCALE + 20,
+        Math.PI / 3,
+            this.mapOffsetX,
+            this.mapOffsetY,
+            this.MAP_SPEED
+        )
+
+        //camera
+        this.DOUBLE_PI = 2 * Math.PI
         // Initialize game loop
         this.gameLoop(0);
     }
@@ -98,25 +121,44 @@ export default class GameWindow {
         this.canvas.height = this.height
 
         if (this.context) {
-            // Update screen
-            this.context.fillStyle = 'Black';
-            this.context.fillRect(this.canvas.width / 2 - this.HALF_WIDTH, this.canvas.height / 2 - this.HALF_HEIGHT, this.WIDTH, this.HEIGHT);
-
-            // Render FPS to screen
-            this.context.fillStyle = 'White';
-            this.context.font = '10px Monospace';
-            this.context.fillText('FPS: ' + this.fps_rate, 0, 20);
-
+            this.update_screen()
             //draw map
             this.draw_map()
+
+            this.context.fillStyle = "Red"
+            this.context.beginPath();
+            this.context.arc(this.player.mapX, this.player.mapY, 10, 0, this.DOUBLE_PI)
+            this.context.fill()
+            this.context.closePath()
+
+            this.context.strokeStyle = 'Yellow'
+            this.context.lineWidth = 1
+            this.context.beginPath()
+            this.context.moveTo(this.player.mapX, this.player.mapY)
+            this.context.lineTo(
+                this.player.mapX + Math.sin(this.player.angle) * 50,
+                this.player.mapY + Math.cos(this.player.angle) * 50
+            )
+            this.context.stroke()
+
+
+
+
         }
-        
+        //update player position
+        this.player.updatePosition()
+
+        this.player.mapX = this.mapOffsetX + this.player.xpos
+        this.player.mapY = this.mapOffsetY + this.player.ypos
+        this.player.offsetX = Math.sin(this.player.angle) * this.MAP_SPEED
+        this.player.offsetY = Math.cos(this.player.angle) * this.MAP_SPEED
 
         // Infinite loop
         requestAnimationFrame(this.gameLoop);
     }
     private draw_map(){
         if(!this.context) return
+
         for (let row = 0; row < this.MAP.length; row++) {
             for (let column = 0; column < this.MAP[row].length; column++) {
                 // let square = row *  this.MAP_SIZE + column
@@ -126,12 +168,25 @@ export default class GameWindow {
                     this.context.fillStyle = 'Black';
                 }
                 this.context.fillRect(
-                    Math.floor(this.canvas.width / 2 - this.MAP_RANGE / 2) + column * this.MAP_SCALE,
-                    Math.floor(this.canvas.height / 2 - this.MAP_RANGE / 2) + row * this.MAP_SCALE,
+                    this.mapOffsetX + column * this.MAP_SCALE,
+                    this.mapOffsetY + row * this.MAP_SCALE,
                     this.MAP_SCALE,
                     this.MAP_SCALE
                 );
             }
         }
+    }
+
+    private update_screen(){
+        if(!this.context) return
+        // Update screen
+        this.context.fillStyle = 'Black';
+        this.context.fillRect(this.canvas.width / 2 - this.HALF_WIDTH, this.canvas.height / 2 - this.HALF_HEIGHT, this.WIDTH, this.HEIGHT);
+
+        // Render FPS to screen
+        this.context.fillStyle = 'White';
+        this.context.font = '10px Monospace';
+        this.context.fillText('FPS: ' + this.fps_rate, 0, 20);
+
     }
 }
