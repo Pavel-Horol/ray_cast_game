@@ -13,7 +13,7 @@ export class Player {
     offsetY: number
     mapOffsetX: number
     mapOffsetY: number
-
+    mapSpeed: number
     constructor(
         x:number,
         y: number,
@@ -34,8 +34,9 @@ export class Player {
         this.moveY = 0
         this.moveAngle = 0
 
-        this.offsetX = Math.sin(this.angle) * mapSpeed;
+        this.offsetX = Math.sin(this.angle) * mapSpeed
         this.offsetY = Math.cos(this.angle) * mapSpeed
+        this.mapSpeed = mapSpeed
     }
 
     moveForward() {
@@ -66,6 +67,11 @@ export class Player {
     }
 
     updatePosition() {
+
+        this.mapX = this.mapOffsetX + this.xpos
+        this.mapY = this.mapOffsetY + this.ypos
+        this.offsetX = Math.sin(this.angle) * this.mapSpeed
+        this.offsetY = Math.cos(this.angle) * this.mapSpeed
 
         if( this.moveX ) {
             this.xpos += this.offsetX * this.moveX

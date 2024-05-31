@@ -121,6 +121,8 @@ export default class GameWindow {
         this.canvas.height = this.height
 
         if (this.context) {
+
+            //update screen
             this.update_screen()
             //draw map
             this.draw_map()
@@ -147,11 +149,6 @@ export default class GameWindow {
         }
         //update player position
         this.player.updatePosition()
-
-        this.player.mapX = this.mapOffsetX + this.player.xpos
-        this.player.mapY = this.mapOffsetY + this.player.ypos
-        this.player.offsetX = Math.sin(this.player.angle) * this.MAP_SPEED
-        this.player.offsetY = Math.cos(this.player.angle) * this.MAP_SPEED
 
         // Infinite loop
         requestAnimationFrame(this.gameLoop);
