@@ -8,6 +8,13 @@ export default class GameWindow {
     private readonly HEIGHT: number = 600;
     private readonly HALF_WIDTH: number = this.WIDTH / 2;
     private readonly HALF_HEIGHT: number = this.HEIGHT / 2;
+
+
+
+    //camera
+    private readonly FOV = Math.PI / 3;
+    private readonly HALF_FOV = this.FOV / 2;
+    private readonly STEP_ANGLE = this.FOV / 2;
     private readonly DOUBLE_PI: number = 2 * Math.PI;
 
     canvas: HTMLCanvasElement;
@@ -40,6 +47,7 @@ export default class GameWindow {
 
             this.calcFPS();
             this.updateScreen();
+            this.showDebug()
 
             this.map.draw(this.WIDTH, this.HEIGHT)
             this.player.draw(this.map.mapOffsetX, this.map.mapOffsetY)
@@ -60,8 +68,8 @@ export default class GameWindow {
 
     private showFPS() {
         this.context.fillStyle = 'White';
-        this.context.font = '10px Monospace';
-        this.context.fillText('FPS: ' + this.fps_rate, 0, 20);
+        this.context.font = '12px Monospace';
+        this.context.fillText('FPS: ' + this.fps_rate, 10, 20);
     }
 
     private calcFPS() {
@@ -71,5 +79,31 @@ export default class GameWindow {
         const cycleTime = startTime - this.oldCycleTime;
         this.oldCycleTime = startTime;
         if (this.cycleCount % 60 === 0) this.fps_rate = `${Math.floor(1000 / cycleTime)}`;
+    }
+
+    private showDebug() {
+        this.context.fillStyle = 'White';
+        this.context.font = '12px Monospace';
+
+        const debugInfo = {
+            mapOffsetX: this.map.mapOffsetX,
+            mapOffsetY: this.map.mapOffsetY,
+            playerX: this.player.x,
+            playerY: this.player.y,
+            playerAngel: this.player.angle,
+            playerMapX: this.player.pMapX,
+            playerMapY: this.player.pMapY,
+            playerOffsetX: this.player.pOffsetX,
+            playerOffsetY: this.player.pOffsetY,
+            mapTargetX: this.player.mTargetX,
+            mapTargetY: this.player.mTargetY,
+        };
+
+        let yPosition = 50; // Starting y position for text
+
+        for (const [key, value] of Object.entries(debugInfo)) {
+            this.context.fillText(`${key}: ${value}`, 10, yPosition);
+            yPosition += 12; // Move to the next line
+        }
     }
 }

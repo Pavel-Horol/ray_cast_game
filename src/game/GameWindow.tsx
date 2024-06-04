@@ -22,6 +22,12 @@ export const GameWindow = () => {
                         case 'KeyW':
                             player.moveForward();
                             break;
+                        // case 'KeyD':
+                        //     player.moveRight();
+                        //     break;
+                        // case 'KeyA':
+                        //     player.moveLeft();
+                        //     break;
                         case 'KeyA':
                             player.lookLeft();
                             break;
@@ -36,8 +42,8 @@ export const GameWindow = () => {
                         case 'KeyW':
                             player.resetMoveXY();
                             break;
-                        case 'KeyA':
                         case 'KeyD':
+                        case 'KeyA':
                             player.resetMoveAngle();
                             break;
                     }

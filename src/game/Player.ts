@@ -9,14 +9,22 @@ export class Player {
     moveAngle: number = 0
     radius: number = 10
 
+    //for debug
+    pMapX: number = 0
+    pMapY: number = 0
+    pOffsetX = 0
+    pOffsetY = 0
+    mTargetX = 0
+    mTargetY = 0
+
     constructor(
         private readonly context: CanvasRenderingContext2D,
         private readonly mapSpeed: number,
         private readonly mapScale: number,
         private readonly mapSize: number,
     ) {
-        this.x = this.mapScale + 30
-        this.y = this.mapScale + 30
+        this.x = this.mapScale + 20
+        this.y = this.mapScale + 20
     }
 
     moveForward() { this.moveX = 1; this.moveY = 1; }
@@ -30,6 +38,9 @@ export class Player {
         // player
         let playerMapX = this.x + mapOffsetX
         let playerMapY = this.y + mapOffsetY
+        this.pMapX = playerMapX
+        this.pMapY = playerMapY
+
         this.context.fillStyle = "Red"
         this.context.beginPath();
         this.context.arc(
@@ -56,8 +67,14 @@ export class Player {
     updatePosition(){
         let playerOffsetX = Math.sin(this.angle) * this.mapSpeed
         let playerOffsetY = Math.cos(this.angle) * this.mapSpeed
+
         let mapTargetX = Math.floor(this.y / this.mapScale) * this.mapSize + Math.floor((this.x + playerOffsetX * this.moveX) / this.mapScale)
         let mapTargetY = Math.floor(this.x / this.mapScale) * this.mapSize + Math.floor((this.y + playerOffsetY * this.moveY) / this.mapScale)
+
+        this.pOffsetX = playerOffsetX
+        this.pOffsetY = playerOffsetY
+        this.mTargetX = mapTargetX
+        this.mTargetY = mapTargetY
 
         if(this.moveX && map[mapTargetX] === 0) this.x += playerOffsetX * this.moveX
         if(this.moveY && map[mapTargetY] === 0) this.y += playerOffsetY * this.moveY
