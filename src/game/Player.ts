@@ -7,7 +7,7 @@ export class Player {
     moveX: number = 0
     moveY: number = 0
     moveAngle: number = 0
-    radius: number = 10
+    radius: number = 5
 
     //for debug
     pMapX: number = 0
@@ -36,8 +36,8 @@ export class Player {
 
     draw(mapOffsetX:number, mapOffsetY: number){
         // player
-        let playerMapX = this.x + mapOffsetX
-        let playerMapY = this.y + mapOffsetY
+        let playerMapX = (this.x / this.mapScale) * 5  + mapOffsetX
+        let playerMapY = (this.y / this.mapScale) * 5 + mapOffsetY
         this.pMapX = playerMapX
         this.pMapY = playerMapY
 
@@ -52,16 +52,6 @@ export class Player {
         this.context.fill()
         this.context.closePath()
 
-        // look vector
-        // this.context.strokeStyle = 'Yellow'
-        // this.context.lineWidth = 1
-        // this.context.beginPath()
-        // this.context.moveTo(playerMapX, playerMapY)
-        // this.context.lineTo(
-        //     playerMapX + Math.sin(this.angle) * 50,
-        //     playerMapY + Math.cos(this.angle) * 50
-        // )
-        // this.context.stroke()
     }
 
     updatePosition(){

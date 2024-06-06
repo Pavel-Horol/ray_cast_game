@@ -49,8 +49,6 @@ export default class GameWindow {
             this.updateScreen();
             this.showDebug()
 
-            this.map.draw(this.WIDTH, this.HEIGHT)
-            this.player.draw(this.map.mapOffsetX, this.map.mapOffsetY)
             this.player.updatePosition()
 
             this.showFPS();
@@ -89,10 +87,6 @@ export default class GameWindow {
                     if(map[targetSquare] !== 0) break
                     rayEndX += rayDirectionX * this.map.MAP_SCALE
                 }
-                // temp xEnd yEnd
-                let tempEndX = rayEndX
-                let tempEndY = rayEndY
-
 
                 // vertical intersection
                 let  rayDirectionY, horizontalDepth = 0;
@@ -111,20 +105,22 @@ export default class GameWindow {
                     if(map[targetSquare] !== 0) break
                     rayEndY += rayDirectionY * this.map.MAP_SCALE
                 }
-                let finalX = verticalDepth < horizontalDepth ? tempEndX : rayEndX
-                let finalY = verticalDepth < horizontalDepth ? tempEndY : rayEndY
-                // draw ray
-                this.context.strokeStyle = 'Lime'
-                this.context.lineWidth = 1
-                this.context.beginPath()
-                this.context.moveTo(this.player.pMapX, this.player.pMapY)
+                //render 3d
+                let depth = verticalDepth < horizontalDepth ? verticalDepth : horizontalDepth
+                let wallHeight = Math.min(this.map.MAP_SCALE * 300 / (depth + 0.0001), this.HEIGHT)
+                this.context.fillStyle = '#aaa'
+                this.context.fillRect(this.map.mapOffsetX + ray, this.map.mapOffsetY + (this.HEIGHT / 2 - wallHeight / 2), 1, wallHeight )
 
-                this.context.lineTo(finalX + this.map.mapOffsetX, finalY + this.map.mapOffsetY)
-                this.context.stroke()
-                //
                 currentAngle -= this.STEP_ANGLE
             }
 
+
+
+
+            if(this.map.isShow){
+                this.map.draw(this.WIDTH, this.HEIGHT)
+                this.player.draw(this.map.mapOffsetX, this.map.mapOffsetY)
+            }
         }
         requestAnimationFrame(this.gameLoop);
     }

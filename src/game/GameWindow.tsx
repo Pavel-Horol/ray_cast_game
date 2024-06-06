@@ -15,6 +15,7 @@ export const GameWindow = () => {
                 const player = gameWindow.player;
 
                 const handleKeyDown = (event: KeyboardEvent) => {
+                    console.log(event.code)
                     switch (event.code) {
                         case 'KeyS':
                             player.moveBackward();
@@ -22,17 +23,14 @@ export const GameWindow = () => {
                         case 'KeyW':
                             player.moveForward();
                             break;
-                        // case 'KeyD':
-                        //     player.moveRight();
-                        //     break;
-                        // case 'KeyA':
-                        //     player.moveLeft();
-                        //     break;
                         case 'KeyA':
                             player.lookLeft();
                             break;
                         case 'KeyD':
                             player.lookRight();
+                            break;
+                        case 'KeyM':
+                            gameWindow.map.toggleShowMap()
                             break;
                     }
                 };
