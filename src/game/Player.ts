@@ -53,15 +53,15 @@ export class Player {
         this.context.closePath()
 
         // look vector
-        this.context.strokeStyle = 'Yellow'
-        this.context.lineWidth = 1
-        this.context.beginPath()
-        this.context.moveTo(playerMapX, playerMapY)
-        this.context.lineTo(
-            playerMapX + Math.sin(this.angle) * 50,
-            playerMapY + Math.cos(this.angle) * 50
-        )
-        this.context.stroke()
+        // this.context.strokeStyle = 'Yellow'
+        // this.context.lineWidth = 1
+        // this.context.beginPath()
+        // this.context.moveTo(playerMapX, playerMapY)
+        // this.context.lineTo(
+        //     playerMapX + Math.sin(this.angle) * 50,
+        //     playerMapY + Math.cos(this.angle) * 50
+        // )
+        // this.context.stroke()
     }
 
     updatePosition(){

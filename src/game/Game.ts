@@ -14,7 +14,7 @@ export default class GameWindow {
     //camera
     private readonly FOV = Math.PI / 3;
     private readonly HALF_FOV = this.FOV / 2;
-    private readonly STEP_ANGLE = this.FOV / 2;
+    private readonly STEP_ANGLE = this.FOV / this.WIDTH;
     private readonly DOUBLE_PI: number = 2 * Math.PI;
 
     canvas: HTMLCanvasElement;
@@ -54,6 +54,77 @@ export default class GameWindow {
             this.player.updatePosition()
 
             this.showFPS();
+
+            //ray casting
+            let currentAngle = this.player.angle + this.HALF_FOV
+
+            let rayStartX = Math.floor(this.player.x / this.map.MAP_SCALE) * this.map.MAP_SCALE
+            let rayStartY = Math.floor(this.player.y / this.map.MAP_SCALE) * this.map.MAP_SCALE
+
+           //loop for casted rays
+            for(let ray = 0; ray < this.WIDTH; ray ++){
+
+                let currentSin = Math.sin(currentAngle); currentSin = currentSin ? currentSin : 0.000001
+                let currentCos = Math.cos(currentAngle); currentCos = currentCos ? currentCos : 0.000001
+
+                // vertical intersection
+                let rayEndX, rayEndY, rayDirectionX, verticalDepth = 0;
+                if (currentSin > 0) {
+                    rayEndX = rayStartX + this.map.MAP_SCALE
+                    rayDirectionX = 1
+                }else {
+                    rayEndX = rayStartX
+                    rayDirectionX = -1
+                }
+                rayEndY = this.player.y * currentCos
+                for(let offset = 0; offset < this.map.MAP_RANGE; offset += this.map.MAP_SCALE){
+                    verticalDepth = (rayEndX - this.player.x) / currentSin
+                    rayEndY = this.player.y + verticalDepth * currentCos
+                    let mapTargetX = Math.floor(rayEndX / this.map.MAP_SCALE)
+                    let mapTargetY = Math.floor(rayEndY / this.map.MAP_SCALE)
+                    if( currentSin <= 0 ) mapTargetX += rayDirectionX
+
+                    let targetSquare = mapTargetY * this.map.MAP_SIZE + mapTargetX
+                    if(targetSquare < 0 || targetSquare > this.map.MAP.length - 1) break
+                    if(map[targetSquare] !== 0) break
+                    rayEndX += rayDirectionX * this.map.MAP_SCALE
+                }
+                // temp xEnd yEnd
+                let tempEndX = rayEndX
+                let tempEndY = rayEndY
+
+
+                // vertical intersection
+                let  rayDirectionY, horizontalDepth = 0;
+                if (currentCos > 0) { rayEndY = rayStartY + this.map.MAP_SCALE; rayDirectionY = 1 }
+                else { rayEndY = rayStartY; rayDirectionY = -1 }
+
+                for(let offset = 0; offset < this.map.MAP_RANGE; offset += this.map.MAP_SCALE){
+                    horizontalDepth = (rayEndY - this.player.y) / currentCos
+                    rayEndX = this.player.x + horizontalDepth * currentSin
+                    let mapTargetX = Math.floor(rayEndX / this.map.MAP_SCALE)
+                    let mapTargetY = Math.floor(rayEndY / this.map.MAP_SCALE)
+                    if( currentCos <= 0 ) mapTargetY += rayDirectionY
+
+                    let targetSquare = mapTargetY * this.map.MAP_SIZE + mapTargetX
+                    if(targetSquare < 0 || targetSquare > this.map.MAP.length - 1) break
+                    if(map[targetSquare] !== 0) break
+                    rayEndY += rayDirectionY * this.map.MAP_SCALE
+                }
+                let finalX = verticalDepth < horizontalDepth ? tempEndX : rayEndX
+                let finalY = verticalDepth < horizontalDepth ? tempEndY : rayEndY
+                // draw ray
+                this.context.strokeStyle = 'Lime'
+                this.context.lineWidth = 1
+                this.context.beginPath()
+                this.context.moveTo(this.player.pMapX, this.player.pMapY)
+
+                this.context.lineTo(finalX + this.map.mapOffsetX, finalY + this.map.mapOffsetY)
+                this.context.stroke()
+                //
+                currentAngle -= this.STEP_ANGLE
+            }
+
         }
         requestAnimationFrame(this.gameLoop);
     }
