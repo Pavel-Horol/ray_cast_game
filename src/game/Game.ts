@@ -41,14 +41,14 @@ export default class GameWindow {
         this.canvas.width = this.WIDTH;
 
         this.bgImage = document.createElement('img')
-        this.bgImage.src = 'src/assets/bg.png'
+        this.bgImage.src = '/src/assets/bg.png'
 
         this.map = new GameMap(this.context)
         this.player = new Player(this.context, this.map.MAP_SPEED, this.map.MAP_SCALE, this.map.MAP_SIZE)
 
         for(let filename = 0; filename < 3; filename++){
             let image = document.createElement('img')
-            image.src = 'src/assets/walls/' + filename + '.png'
+            image.src = '/src/assets/walls/' + filename + '.png'
             this.walls.push(image)
         }
 
