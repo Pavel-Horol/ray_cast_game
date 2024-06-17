@@ -3,7 +3,7 @@ import {map} from "./assets";
 export default class GameMap{
 
     readonly MAP_SIZE: number = 16
-    readonly MAP_SCALE: number = 20
+    readonly MAP_SCALE: number = 128
     readonly MAP_RANGE: number = this.MAP_SCALE * this.MAP_SIZE
     readonly MAP_SPEED: number = ( this.MAP_SCALE / 2 ) / 10
 
@@ -22,8 +22,8 @@ export default class GameMap{
 
     draw(width: number, height: number ){
 
-        this.mapOffsetX = Math.floor(width / 2 ) - 150
-        this.mapOffsetY = 4
+        this.mapOffsetX = 0 //Math.floor(width / 2) -
+        this.mapOffsetY = 0
 
         for (let row = 0; row < this.MAP_SIZE; row++) {
             for (let col = 0; col < this.MAP_SIZE; col++) {
@@ -34,7 +34,7 @@ export default class GameMap{
                     this.context.fillStyle = "#aaa"
                 }
                 this.context.fillRect(
-                    this.mapOffsetX + col * 5,
+                    width - 100 + col * 5,
                     this.mapOffsetY + row * 5,
                     5,
                         5,
