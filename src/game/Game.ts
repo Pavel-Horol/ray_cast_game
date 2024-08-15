@@ -202,11 +202,11 @@ export default class GameWindow {
             mapTargetY: this.player.mTargetY,
         };
 
-        let yPosition = 50; // Starting y position for text
+        let yPosition = 50;
 
         for (const [key, value] of Object.entries(debugInfo)) {
             this.context.fillText(`${key}: ${value}`, 10, yPosition);
-            yPosition += 12; // Move to the next line
+            yPosition += 12;
         }
     }
 }
